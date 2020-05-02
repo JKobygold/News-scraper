@@ -1,5 +1,5 @@
 const express = require("express");
-const expressHandlebars = require("express-handlebars");
+const exphbs = require("express-handlebars");
 const logger = require("morgan");
 const mongoose = require("mongoose");
 const axios = require("axios");
@@ -19,11 +19,14 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 
 //handlebars config
-app.engine("handlebars", expressHandlebars({
-    defaultLayout: "main"
-}));
-app.set("view engine", "handlebars");
-
+app.engine(
+    "handlebars",
+    exphbs({
+      defaultLayout: "main"
+    })
+  );
+  app.set("view engine", "handlebars");
+  
 // var db = require("./models");
 
 
@@ -34,7 +37,7 @@ app.set("view engine", "handlebars");
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsStory";
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true} );
 
 // the following are the base routes for my application
 app.get("/", (req, res) => {
