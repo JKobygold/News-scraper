@@ -19,13 +19,10 @@ app.use(bodyParser.json());
 app.use(express.static("public"));
 
 //handlebars config
-app.engine(
-    "handlebars",
-    exphbs({
-      defaultLayout: "main"
-    })
-  );
-  app.set("view engine", "handlebars");
+
+app.engine('handlebars', exphbs());
+app.set('view engine', 'handlebars');
+ 
   
 // var db = require("./models");
 
