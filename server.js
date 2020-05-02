@@ -6,6 +6,7 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 var colors = require("colors");
 var bodyParser = require('body-parser');
+const MONGODB_URI= require("./config/keys");
 //Heroku connect/server config
 var PORT = process.env.PORT || 8080;
 
@@ -28,9 +29,9 @@ app.set("view engine", "handlebars");
 
 
 // mongo setup
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsStory";
+var conex = process.env.conex || "mongodb://localhost/newsStory";
 
-mongoose.connect(MONGODB_URI,{useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(conex,{useNewUrlParser: true, useUnifiedTopology: true});
 
 // the following are the base routes for my application
 app.get("/", (req, res) => {
