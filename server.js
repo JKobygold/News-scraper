@@ -7,7 +7,7 @@ const cheerio = require("cheerio");
 var colors = require("colors");
 var bodyParser = require('body-parser');
 //Heroku connect/server config
-var PORT = process.env.PORT || 8080;
+var PORT = 8080;
 
 
 const app = express();
@@ -35,13 +35,11 @@ app.set('views', __dirname + '/views');
 
 
 // mongo setup
-// var connection = process.env.MONGODB_URI || "mongodb://localhost/newsStory";
-
-// mongoose.connect(connection,{useNewUrlParser: true, useUnifiedTopology: true});
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsStory";
 
 mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true} );
+
 
 // the following are the base routes for my application
 app.get("/", (req, res) => {
@@ -108,6 +106,6 @@ app.post("api/notes", function (req, res) {
 
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(process.env.PORT||PORT,  () => {
     console.log("App running on port " + PORT + "!");
 });
