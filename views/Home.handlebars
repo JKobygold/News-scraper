@@ -9,13 +9,13 @@
                 <button class="save">Mongo Scraper</button>
             </li>
             <li class="nav-item">
-                       <button class="save">Home</button>
+                <button class="save">Home</button>
             </li>
             <li class="nav-item">
-               <a href="localhost/8080/saved"> <button class="save">Saved articles</button> </a>
+                <a href="localhost/8080/saved"> <button class="save">Saved articles</button> </a>
             </li>
             <li class="nav-item">
-                 <button class="scrape">Scrap New Articles</button>
+                <button class="scrape">Scrap New Articles</button>
             </li>
         </ul>
     </div>
@@ -23,50 +23,47 @@
 <div class="jumbotron">
     <div class="overlay">
         <div class="background-image">
-        <div class="caption">
-            <h1 class="display-4 text-center">Mongo Scraper!</h1>
-            <p class="lead text-center">New york times edition</p>
-            <p class="lead text-center">
-                <div class="text-center" > Your saved articles</div>
-            </p>
+            <div class="caption">
+                <h1 class="display-4 text-center">Mongo Scraper!</h1>
+                <p class="lead text-center">New york times edition</p>
+                <p class="lead text-center">
+                    <div class="text-center"> Your saved articles</div>
+                </p>
             </div>
         </div>
     </div>
     <div class="ending">
     </div>
-<footer>
-<div class="container text-center">
-    <p>New York Times Mongo Scraper</p>
- </div>   
-</footer>    
+    <footer>
+        <p class="article-container">
+        </p>
+    </footer>
 
 
-<script>
-
-
-   $( ".scrape" ).click(function() {
-
-  alert("yo");
-
-  $.get("/api/fetch").then(function(data){
-    start();
-   
-  }).alert("<h3 class='text-center m-top-40>"+ data.message+"<h3>");
+    <script>
+  $( ".scrape" ).click(function() {
+$.getJSON("/api/headlines", function(data) {
+  // For each one
+  for (var i = 0; i < data.length; i++) {
+    // Display the apropos information on the page
+    $(".article-container").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
+  }
 });
+  });
 
 
-</script>
+    </script>
 
-    
+    <script>
+    </script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"
+        integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
         crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
-     <script src="../public/index.js"></script> 
+    <script src="../public/index.js"></script>
