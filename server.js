@@ -20,9 +20,16 @@ app.use(express.static("public"));
 
 //handlebars config
 
+// app.engine('handlebars', exphbs());
+// app.set('view engine', 'handlebars');
+ 
+
 app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
- 
+app.set('views', __dirname + '/views');
+
+// serve static files form /public
+// app.use(express.static(path.resolve(__dirname, 'public')));
   
 // var db = require("./models");
 
