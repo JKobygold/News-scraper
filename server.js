@@ -45,7 +45,7 @@ mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true} 
 
 // the following are the base routes for my application
 app.get("/", (req, res) => {
-    res.render("home");
+    res.render("Home");
 });
 
 app.get("/saved", (req, res) => {
