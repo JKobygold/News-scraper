@@ -40,8 +40,10 @@ mongoose.connect(MONGODB_URI, {useNewUrlParser: true, useUnifiedTopology: true} 
 app.get("/", (req, res) => {
     res.render("home");
 });
+
 app.get("/saved", (req, res) => {
-    res.render("saved");
+    res.render("Saved");
+
 });
 
 
