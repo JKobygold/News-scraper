@@ -9,25 +9,27 @@
                 <a class="nav-link" href="#">Mongo Scraper <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
+                <a class="active" href="#">Home</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Saved Articles</a>
+                <a class="nav-link" href="http://localhost:8080/saved">Saved Articles</a>
             </li>
             <li class="nav-item">
-                 <a class="nav-link" href="#">Scrap New Articles</a>
+                 <a class="btn btn-danger scrape-new" href="#">Scrap New Articles</a>
             </li>
         </ul>
     </div>
 </nav>
 <div class="jumbotron">
-    <div class="background-image">
+    <div class="overlay">
+        <div class="background-image">
         <div class="caption">
-            <h1 class="display-4">Mongo Scraper!</h1>
-            <p class="lead">New york times edition.</p>
-            <p class="lead">
-                <div> Your saved articles</div>
+            <h1 class="display-4 text-center">Mongo Scraper!</h1>
+            <p class="lead text-center">New york times edition</p>
+            <p class="lead text-center">
+                <div class="text-center" > Your saved articles</div>
             </p>
+            </div>
         </div>
     </div>
     <div class="ending">
@@ -47,3 +49,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
+     <script src="Saved.handlebars"></script> 

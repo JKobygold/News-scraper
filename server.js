@@ -4,7 +4,8 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const axios = require("axios");
 const cheerio = require("cheerio");
-
+var colors = require("colors");
+var bodyParser = require('body-parser');
 //Heroku connect/server config
 var PORT = process.env.PORT || 8080;
 
@@ -13,126 +14,87 @@ const app = express();
 
 //middleware
 app.use(logger("dev"));
-app.use(express.urlencoded({ useNewUrlParser: true }));
-app.use(express.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.use(express.static("public"));
 
 //handlebars config
 app.engine("handlebars", expressHandlebars({
-    defaultLayout:"main"
+    defaultLayout: "main"
 }));
 app.set("view engine", "handlebars");
 
-var db = require("./models");
+// var db = require("./models");
 
-
-app.get("/scrape", function(req, res) {
-    // First, we grab the body of the html with axios
-    axios.get("http://www.nytimes.com/").then(function(response) {
-      // Then, we load that into cheerio and save it to $ for a shorthand selector
-      var $ = cheerio.load(response.data);
-  
-      // Now, we grab every h2 within an article tag, and do the following:
-      $("article h2").each(function(i, element) {
-        // Save an empty result object
-        var result = {};
-  
-        // Add the text and href of every link, and save them as properties of the result object
-        result.title = $(this)
-          .children("a")
-          .text();
-        result.link = $(this)
-          .children("a")
-          .attr("href");
-  
-        // Create a new Article using the `result` object built from scraping
-        db.Article.create(result)
-          .then(function(dbArticle) {
-            // View the added result in the console
-            console.log(dbArticle);
-          })
-          .catch(function(err) {
-            // If an error occurred, log it
-            console.log(err);
-          });
-      });
-  
-      // Send a message to the client
-      res.send("Scrape Complete");
-    });
-  });
-  
-  // Route for getting all Articles from the db
-  app.get("/articles", function(req, res) {
-    // Grab every document in the Articles collection
-    db.Article.find({})
-      .then(function(dbArticle) {
-        // If we were able to successfully find Articles, send them back to the client
-        res.json(dbArticle);
-      })
-      .catch(function(err) {
-        // If an error occurred, send it to the client
-        res.json(err);
-      });
-  });
-  
-  // Route for grabbing a specific Article by id, populate it with it's note
-  app.get("/articles/:id", function(req, res) {
-    // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-    db.Article.findOne({ _id: req.params.id })
-      // ..and populate all of the notes associated with it
-      .populate("note")
-      .then(function(dbArticle) {
-        // If we were able to successfully find an Article with the given id, send it back to the client
-        res.json(dbArticle);
-      })
-      .catch(function(err) {
-        // If an error occurred, send it to the client
-        res.json(err);
-      });
-  });
-  
-  // Route for saving/updating an Article's associated Note
-  app.post("/articles/:id", function(req, res) {
-    // Create a new note and pass the req.body to the entry
-    db.Note.create(req.body)
-      .then(function(dbNote) {
-        // If a Note was created successfully, find one Article with an `_id` equal to `req.params.id`. Update the Article to be associated with the new Note
-        // { new: true } tells the query that we want it to return the updated User -- it returns the original by default
-        // Since our mongoose query returns a promise, we can chain another `.then` which receives the result of the query
-        return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
-      })
-      .then(function(dbArticle) {
-        // If we were able to successfully update an Article, send it back to the client
-        res.json(dbArticle);
-      })
-      .catch(function(err) {
-        // If an error occurred, send it to the client
-        res.json(err);
-      });
-  });
 
 // mongo setup
-var bird = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-mongoose.connect(bird,(err)=>{
-    if(err){
-        console.log("Database failed to connect");
-    }else{
-        console.log("Database successfully connected");
-    }
-});
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsStory";
 
-// routes
-app.get("/",(req,res)=>{
+mongoose.connect(MONGODB_URI,{useNewUrlParser: true, useUnifiedTopology: true});
+
+// the following are the base routes for my application
+app.get("/", (req, res) => {
     res.render("home");
 });
-app.get("/saved",(req,res)=>{
+app.get("/saved", (req, res) => {
     res.render("saved");
 });
 
 
- 
+var headlines = require("./controller/headlines");
+var scrape = require("./controller/scrape");
+var notescontrol = require("./controller/notes");
+
+app.get("/api/fetch", function (req, res) {
+    headlines.fetch(function (err, docs) {
+        if (!docs || docs.insertedcount === 0) {
+            res.json({ message: "Sorry,looks like we have nothing to show you" });
+        }
+        else {
+            res.json({ message: "we have added :" + docs.insertedcount + " new articles" });
+        }
+    });
+});
+app.get("/api/headlines", function (req, res) {
+    var query = {};
+    if (req.query.saved) {
+        query = req.query;
+    }
+    headlines.get(query, function (data) {
+        res.json(data);
+    });
+});
+
+app.delete("/api/headlines/:id"), function (req, res) {
+    var query = {};
+    query._id = req.params.id;
+    headlines.delete(query, function (err, data) {
+        res.json(data);
+    });
+};
+//
+app.patch("/api/headlines", function (req, res) {
+    headlines.update(req.body, function (err, data) {
+        res.json(data)
+    });
+});
+//taking in notes
+app.get("/api/notes:headlines_id?", function (req, res) {
+    var query = {};
+    if (req.params.headline_id) {
+        query._id = req.params.headlines_id;
+    }
+    notescontrol.get(query, function (err, data) { res.json(data); });
+});
+
+//delete notes should be here
+
+app.post("api/notes", function (req, res) {
+    notescontrol.save(req.body, function (data) { res.json(data); });
+});
+
+
 // Start the server
-app.listen(PORT, ()=> {
-  console.log("App running on port " + PORT + "!");
+app.listen(PORT, () => {
+    console.log("App running on port " + PORT + "!");
 });
