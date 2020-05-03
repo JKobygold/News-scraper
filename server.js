@@ -62,7 +62,7 @@ app.get("/api/fetch", function (req, res) {
         if (!docs || docs.insertedcount === 0) {
             res.json({ message: "Sorry,looks like we have nothing to show you" });
         }
-        else {
+        else{
             res.json({ message: "we have added :" + docs.insertedcount + " new articles" });
         }
     });
