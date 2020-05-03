@@ -51,7 +51,6 @@ app.get("/saved", (req, res) => {
 
 });
 
-
 var headlines = require("./controller/headlines");
 var scrape = require("./controller/scrape");
 var notescontrol = require("./controller/notes");
@@ -61,7 +60,7 @@ app.get("/api/fetch", function (req, res) {
         if (!docs || docs.insertedcount === 0) {
             res.json({ message: "Sorry,looks like we have nothing to show you" });
         }
-        else {
+        else{
             res.json({ message: "we have added :" + docs.insertedcount + " new articles" });
         }
     });
