@@ -53,7 +53,6 @@ app.get("/saved", (req, res) => {
 
 });
 
-
 var headlines = require("./controller/headlines");
 var scrape = require("./controller/scrape");
 var notescontrol = require("./controller/notes");
